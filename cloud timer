@@ -1,0 +1,31 @@
+.github/workflows/update.yml
+name: Auto-Update Football Radar & Calendar
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run Radar & Calendar Sync
+        run: |
+          mkdir -p ~/Desktop/project92log
+          cp data.js calendar.js ~/Desktop/project92log/ 2>/dev/null || true
+          python3 radar.py
+          python3 build_cal.py
+          cp ~/Desktop/project92log/data.js ~/Desktop/project92log/calendar.js .
+      - name: Commit Fresh Data
+        run: |
+          git config user.name "Project 92 Bot"
+          git config user.email "bot@project92log.local"
+          git add data.js calendar.js
+          git diff --staged --quiet || git commit -m "⚡ Live Radar & Calendar Update"
+          git push
+
