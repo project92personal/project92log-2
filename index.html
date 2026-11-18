@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html><head><meta charset="UTF-8"><title>PROJECT 92 LOG</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="P92 Log"><link rel="apple-touch-icon" href="icon.png"><link rel="manifest" href="manifest.json">
 <style>
 *{box-sizing:border-box}
 body{background:#0d1117;color:#e6edf3;font-family:monospace;margin:0;display:flex;min-height:100vh}
@@ -22,9 +23,13 @@ body{background:#0d1117;color:#e6edf3;font-family:monospace;margin:0;display:fle
   <input id="g-search" placeholder="🔍 Search keyword & rewrite..." onkeydown="if(event.key==='Enter')globalNewsSearch()">
   <button class="nav" style="background:#238636;border-color:#238636;text-align:center" onclick="globalNewsSearch()">⚡ AI NEWS SEARCH</button>
   <button class="nav" id="notif-btn" style="text-align:center" onclick="toggleAlerts()">🔔 ENABLE BREAKING ALERTS</button>
+  <button class="nav" id="install-btn" style="text-align:center;border-color:#58a6ff;color:#58a6ff" onclick="promptInstall()">📲 ADD TO HOME SCREEN</button>
   <hr style="border:0;border-top:1px solid #30363d;width:100%;margin:4px 0">
   <div class="nav active" id="t-feed" onclick="go('feed')">📡 LIVE FEED</div>
-  <div class="nav" id="t-cal" onclick="go('cal')">📅 FIXTURE CALENDAR</div>
+  <div class="nav" id="t-intl" onclick="go('intl')">🌍 INTL & WORLD</div>
+  <div class="nav" id="t-cal-club" onclick="openCalTab('CLUB')">📅 CLUB CALENDAR</div>
+  <div class="nav" id="t-cal-intl" onclick="openCalTab('INTL')">🌍 INTL CALENDAR</div>
+  <div class="nav" id="t-cal-all" onclick="openCalTab('ALL')">🗓️ ALL FIXTURES CALENDAR</div>
   <div class="nav" id="t-fix" onclick="go('fix')">📋 LINEUPS & PREDICTIONS</div>
   <div class="nav" id="t-done" onclick="go('done')">🟢 CONFIRMED MOVES</div>
   <div class="nav" id="t-top" onclick="go('top')">🔥 TOP PROBABILITIES</div>
