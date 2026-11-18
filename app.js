@@ -5,12 +5,13 @@ function bdg(x) {
   return '<span class="prob' + (x.risk ? ' risk' : '') + '">' + (x.risk ? '⚠️ ' : '') + x.p + '% ' + l + '</span>';
 }
 function go(m){
-  ["feed","cal","fix","done","top","player","calc","goal"].forEach(k=>{
+  ["feed","intl","cal-club","cal-intl","cal-all","fix","done","top","player","calc","goal"].forEach(k=>{
     let t=document.getElementById("t-"+k), b=document.getElementById("b-"+k);
     if(t) t.classList.toggle("active", k===m);
-    if(b) b.style.display=(k===m && k!=="top") ? "flex" : "none";
+    if(b) b.style.display=(k===m && !["top","intl"].includes(k)) ? "flex" : "none";
   });
   if(m==="feed") draw();
+  else if(m==="intl") drawIntl();
   else if(m==="cal") loadCalendar();
   else if(m==="fix") list.innerHTML="<div class=dossier>Type any club name above and click <b>🔍 FIND NEXT 5 FIXTURES</b>.</div>";
   else if(m==="done") drawDone();
@@ -441,3 +442,19 @@ async function toggleAlerts() {
   }
 }
 updateAlertBtn();
+
+
+let activeCalScope = "ALL";
+function openCalTab(scope) {
+  activeCalScope = scope;
+  ["feed","intl","cal-club","cal-intl","cal-all","fix","done","top","player","calc","goal"].forEach(k => {
+    let t = document.getElementById("t-" + k), b = document.getElementById("b-" + k);
+    if (t) t.classList.toggle("active", k === ("cal-" + scope.toLowerCase()));
+    if (b) b.style.display = "none";
+  });
+  let calBar = document.getElementById("b-cal");
+  if (calBar) calBar.style.display = "flex";
+  let modeEl = document.getElementById("cal-mode");
+  if (modeEl) modeEl.value = scope;
+  loadCalendar();
+}
