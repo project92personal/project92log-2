@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>PROJECT 92 LOG</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="P92 Log"><link rel="apple-touch-icon" href="icon.png"><link rel="manifest" href="manifest.json">
+<style>
+*{box-sizing:border-box}
+body{background:#0d1117;color:#e6edf3;font-family:monospace;margin:0;display:flex;min-height:100vh}
+.side{width:255px;background:#161b22;border-right:1px solid #30363d;padding:18px 14px;display:flex;flex-direction:column;gap:8px;position:sticky;top:0;height:100vh;overflow-y:auto}
+.main{flex:1;padding:24px;max-width:920px}
+.nav,.bar input,.bar select,.bar button,.side input{background:#0d1117;color:#e6edf3;border:1px solid #30363d;padding:9px 12px;border-radius:6px;font-family:inherit;font-size:.9em}
+.nav{text-align:left;cursor:pointer;font-weight:bold;transition:all .15s}.nav:hover{border-color:#58a6ff}.nav.active{background:#58a6ff;color:#0d1117;border-color:#58a6ff}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.bar input{flex:1}
+.card,.box,.dossier{background:#161b22;border:1px solid #30363d;border-left:4px solid #58a6ff;padding:14px;margin-bottom:10px;border-radius:6px;cursor:pointer;transition:all .15s}
+.card:hover{border-left-color:#3fb950;transform:translateX(3px)}
+.tag,.prob{padding:2px 6px;border-radius:4px;font-size:.8em;font-weight:bold;margin-left:6px}.prob{border:1px solid #3fb950;color:#3fb950}.prob.risk{border-color:#f85149;color:#f85149}
+.BREAKING{background:#da3633}.TEASER{background:#9e6a03}.RUMOUR{background:#8957e5}.ONGOING_TALKS{background:#bd561d}.ADVANCED_STAGES{background:#0969da}.MEDICAL{background:#1f6feb}.DONE_DEAL{background:#238636}
+#modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);justify-content:center;align-items:center;padding:20px;z-index:20}pre{white-space:pre-wrap;background:#0d1117;padding:12px;border-radius:6px;font-family:inherit;line-height:1.5}
+@media(max-width:740px){body{flex-direction:column}.side{width:100%;height:auto;position:static}}
+.side{transition:all .22s ease;overflow-x:hidden}.side.closed{width:0;padding:0;border:none;opacity:0}.menu-btn{background:#161b22;color:#58a6ff;border:1px solid #30363d;padding:7px 12px;border-radius:6px;cursor:pointer;font-weight:bold;margin-bottom:12px}.menu-btn:hover{background:#58a6ff;color:#0d1117}</style></head><body>
+
+<aside class="side" id="sidebar">
+  <h2 style="color:#58a6ff;margin:0 0 4px">⚽ PROJECT 92 LOG</h2>
+  <div id="clk" style="color:#3fb950;font-size:.8em;margin-bottom:8px"></div>
+  <input id="g-search" placeholder="🔍 Search keyword & rewrite..." onkeydown="if(event.key==='Enter')globalNewsSearch()">
+  <button class="nav" style="background:#238636;border-color:#238636;text-align:center" onclick="globalNewsSearch()">⚡ AI NEWS SEARCH</button>
+  <button class="nav" id="notif-btn" style="text-align:center" onclick="toggleAlerts()">🔔 ENABLE BREAKING ALERTS</button>
+  <button class="nav" id="install-btn" style="text-align:center;border-color:#58a6ff;color:#58a6ff" onclick="promptInstall()">📲 ADD TO HOME SCREEN</button>
+  <hr style="border:0;border-top:1px solid #30363d;width:100%;margin:4px 0">
+  <div class="nav active" id="t-feed" onclick="go('feed')">📡 LIVE FEED</div>
+  <div class="nav" id="t-intl" onclick="go('intl')">🌍 INTL & WORLD</div>
+  <div class="nav" id="t-cal-club" onclick="openCalTab('CLUB')">📅 CLUB CALENDAR</div>
+  <div class="nav" id="t-cal-intl" onclick="openCalTab('INTL')">🌍 INTL CALENDAR</div>
+  <div class="nav" id="t-cal-all" onclick="openCalTab('ALL')">🗓️ ALL FIXTURES CALENDAR</div>
+  <div class="nav" id="t-fix" onclick="go('fix')">📋 LINEUPS & PREDICTIONS</div>
+  <div class="nav" id="t-done" onclick="go('done')">🟢 CONFIRMED MOVES</div>
+  <div class="nav" id="t-top" onclick="go('top')">🔥 TOP PROBABILITIES</div>
+  <div class="nav" id="t-player" onclick="go('player')">👤 PLAYER DOSSIER</div>
+  <div class="nav" id="t-calc" onclick="go('calc')">⚖️ TRANSFER CALCULATOR</div>
+  <div class="nav" id="t-goal" onclick="go('goal')">⚽ SCORING ODDS</div>
+</aside>
+
+<main class="main"><button class="menu-btn" onclick="document.getElementById('sidebar').classList.toggle('closed')">☰ MENU</button>
+  <div class="bar" id="b-feed"><input id="q" placeholder="Filter current feed..." oninput="draw()"><select id="cl" onchange="draw()"><option value="ALL">All Clubs</option><option>ARS</option><option>CHE</option><option>LIV</option><option>MCI</option><option>MUN</option><option>TOT</option><option>NEW</option><option>AVL</option><option>CRY</option><option>FUL</option><option>PREMIER LEAGUE</option><option>CHAMPIONSHIP</option></select><select id="st" onchange="draw()"><option value="ALL">All Statuses</option><option>BREAKING</option><option>TEASER</option><option>RUMOUR</option><option>ONGOING TALKS</option><option>ADVANCED STAGES</option><option>MEDICAL</option><option>DONE DEAL</option></select></div>
+  <div class="bar" id="b-cal" style="display:none"><input id="cal-q" placeholder="🔍 Search club name in calendar..." oninput="renderCal()"><select id="cal-comp" onchange="renderCal()"><option value="ALL">🏆 All Competitions (PL, EFL & Europe)</option><option value="PREMIER LEAGUE">Premier League</option><option value="CHAMPIONSHIP">Championship</option><option value="LEAGUE ONE">League One</option><option value="LEAGUE TWO">League Two</option><option value="EUROPE (ENGLISH CLUBS)">European Football (English Teams)</option></select><select id="cal-team" onchange="renderCal()"><option value="ALL">🏟️ All 92 English Clubs</option></select></div>
+  <div class="bar" id="b-fix" style="display:none"><input id="fix-q" placeholder="🏟️ Search any club (e.g. Arsenal, Manchester United)..." onkeydown="if(event.key==='Enter')searchTeamFixtures()"><button style="background:#58a6ff;color:#000;font-weight:bold" onclick="searchTeamFixtures()">🔍 FIND NEXT 5 FIXTURES</button></div>
+  <div class="bar" id="b-done" style="display:none"><select id="dsort" onchange="drawDone()"><option value="fee">💰 Most Expensive First</option><option value="perf">📈 Highest AI Performance</option></select></div>
+  <div class="bar" id="b-top" style="display:none"></div>
+  <div class="bar" id="b-player" style="display:none"><input id="pq" placeholder="👤 Type any player or manager..." onkeydown="if(event.key==='Enter')buildDossier()"><button style="background:#58a6ff;color:#000;font-weight:bold" onclick="buildDossier()">🔍 GENERATE DOSSIER</button></div>
+  <div class="bar" id="b-calc" style="display:none"><input id="cw" placeholder="👤 Player/Manager..."><input id="cc" placeholder="🏟️ Any Club..."><button style="background:#238636;font-weight:bold" onclick="calc()">⚡ CALCULATE</button></div>
+  <div class="bar" id="b-goal" style="display:none"><input id="g-home" placeholder="🏠 Home Team..."><input id="g-away" placeholder="✈️ Away Team..."><input id="gw" placeholder="⚽ Player (optional)..."><button style="background:#238636;font-weight:bold" onclick="calcGoal()">⚡ SIMULATE ODDS</button></div>
+  <div id="list"></div>
+</main>
+
+<div id="modal" onclick="if(event.target===this)this.style.display='none'"><div class="box" style="max-width:580px;width:100%"><h3 id="mt" style="color:#58a6ff;margin-top:0"></h3><pre id="ma"></pre><button onclick="navigator.clipboard.writeText(ma.innerText);this.innerText='✅ COPIED!'">📋 COPY FOR INSTAGRAM</button></div></div>
+<script src="data.js"></script><script src="calendar.js"></script><script src="app.js?v=8"></script></body></html>
